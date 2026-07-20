@@ -38,23 +38,27 @@ module base() {
   }
 }
 
-/* ---------- board pocket cut: footprint widened in Y for clips + flex gap ---------- */
+/* ---------- board pocket cut ----------
+   Widened in X (the clip axis) so the fingers + flex gap fit; the board is
+   located tightly in Y by the pocket walls (the header edge is a Y edge, so it
+   stays clip-free). */
 module pocketCut(cx, cy, bL, bW, seatZ) {
-  padY = clipGap + clipT;                          // extra room per clip side
-  translate([cx - bL/2, cy - bW/2 - padY, seatZ]) cube([bL, bW + 2*padY, 20]);
+  padX = clipGap + clipT;
+  translate([cx - bL/2 - padX, cy - bW/2, seatZ]) cube([bL + 2*padX, bW, 20]);
 }
 
-/* ---------- two cantilever snap clips on the board's long (Y) edges ---------- */
-module clips(cx, cy, bW, seatZ) {
+/* ---------- two cantilever snap clips on the board's LEFT & RIGHT (X) edges ----------
+   Placed on the side edges so they never touch the pin headers, which sit on a
+   Y edge. Each finger hangs from the pocket ceiling into the box and its nub
+   overhangs inward over the board's back face. */
+module clips(cx, cy, bL, seatZ) {
   backZ = seatZ + boardT;
   for (s = [-1, 1]) {
-    yo = cy + s*(bW/2 + clipGap);                  // finger inner face
-    // finger: anchored at the pocket ceiling (seatZ), hangs into the box (+z)
-    translate([cx - clipW/2, s > 0 ? yo : yo - clipT, seatZ])
-      cube([clipW, clipT, boardT + 2]);
-    // nub: overhangs inward over the board's back face
-    translate([cx - clipW/2, s > 0 ? yo - clipNub : yo, backZ])
-      cube([clipW, clipNub, nubH]);
+    xo = cx + s*(bL/2 + clipGap);                  // finger inner face
+    translate([s > 0 ? xo : xo - clipT, cy - clipW/2, seatZ])
+      cube([clipT, clipW, boardT + 2]);
+    translate([s > 0 ? xo - clipNub : xo, cy - clipW/2, backZ])
+      cube([clipNub, clipW, nubH]);
   }
 }
 
@@ -83,8 +87,8 @@ module lid() {
     translate([wall + pnCX, wall + cY - 1, -0.1])
       linear_extrude(0.7) difference() { square([pnL-8, pnW-10], center=true); square([pnL-10, pnW-12], center=true); }
   }
-  clips(wall + olCX, wall + cY, olW, lidTop - 0.5);   // OLED clips
-  clips(wall + pnCX, wall + cY, pnW, tapFloor);        // PN532 clips
+  clips(wall + olCX, wall + cY, olL, lidTop - 0.5);   // OLED clips (left/right edges)
+  clips(wall + pnCX, wall + cY, pnL, tapFloor);        // PN532 clips (left/right edges)
 }
 
 if (part == "base") base();
