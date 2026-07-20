@@ -66,10 +66,11 @@ module lid() {
     // PN532 recess from underside (leaves tapFloor over it)
     translate([wall + pnCX - pnL/2, wall + cY - pnW/2, tapFloor])
       cube([pnL, pnW, 14]);
-    // engraved text on the OUTER top face
-    translate([wall + pnCX, wall + cY + 12, -0.1])
+    // engraved text on the OUTER top face (mirrored in X so it reads correctly
+    // when the lid is printed top-face-down and flipped over for use)
+    translate([wall + pnCX, wall + cY + 12, -0.1]) mirror([1,0,0])
       linear_extrude(0.9) text("TAP", size=6, halign="center", valign="center", font="Helvetica:style=Bold");
-    translate([extL/2, wall + 2.5, -0.1])
+    translate([extL/2, wall + 2.5, -0.1]) mirror([1,0,0])
       linear_extrude(0.9) text("SATS KIOSK", size=4.5, halign="center", valign="baseline", font="Helvetica:style=Bold");
     // engraved card outline over the tap zone
     translate([wall + pnCX, wall + cY - 1, -0.1])
