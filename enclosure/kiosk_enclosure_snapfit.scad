@@ -8,7 +8,7 @@ floorT   = 2.0;
 lidTop   = 2.0;
 tapFloor = 1.6;    // plastic over the PN532 (card reads through this)
 fit      = 0.4;    // lid-into-base friction fit
-boardT   = 1.7;    // PCB thickness (+ a hair)
+boardT   = 2.6;    // slot height under the catch — roomy so boards slide fully under
 $fn      = 40;
 
 inL = 92; inW = 52; inH = 50;          // internal cavity (deepened for wire nest)
@@ -20,8 +20,8 @@ olWinL = 25; olWinW = 16;              // OLED screen window
 // snap-clip geometry  (fingers grip the board's two long edges)
 clipW   = 8;       // finger width (along the board edge) — wider grab
 clipT   = 1.4;     // finger thickness
-clipGap = 1.0;     // flex gap between finger and pocket wall — a bit looser to slide in
-clipNub = 1.6;     // nub length (overhang over the board = clipNub - clipGap = 0.6mm)
+clipGap = 1.6;     // clip stand-off from the board edge — clips sit farther apart
+clipNub = 2.4;     // nub length (overhang over the board = clipNub - clipGap = 0.8mm)
 nubH    = 1.8;     // nub height — taller catch + longer lead-in ramp
 fingerH = boardT + 4;   // finger length into the box — taller so the catch reaches
 
