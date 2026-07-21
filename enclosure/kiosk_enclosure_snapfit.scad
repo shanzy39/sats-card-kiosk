@@ -11,18 +11,19 @@ fit      = 0.4;    // lid-into-base friction fit
 boardT   = 1.7;    // PCB thickness (+ a hair)
 $fn      = 40;
 
-inL = 92; inW = 52; inH = 34;          // internal cavity
+inL = 92; inW = 52; inH = 50;          // internal cavity (deepened for wire nest)
 
 pnL = 44;  pnW = 42;                    // PN532 V3 footprint
 olL = 28;  olW = 29;                    // SSD1306 PCB footprint
 olWinL = 25; olWinW = 16;              // OLED screen window
 
 // snap-clip geometry  (fingers grip the board's two long edges)
-clipW   = 6;       // finger width (along the board edge)
+clipW   = 8;       // finger width (along the board edge) — wider grab
 clipT   = 1.4;     // finger thickness
-clipGap = 0.8;     // flex gap between finger and pocket wall
-clipNub = 1.4;     // nub length (must exceed clipGap to overhang the board)
-nubH    = 1.2;
+clipGap = 1.0;     // flex gap between finger and pocket wall — a bit looser to slide in
+clipNub = 1.6;     // nub length (overhang over the board = clipNub - clipGap = 0.6mm)
+nubH    = 1.8;     // nub height — taller catch + longer lead-in ramp
+fingerH = boardT + 4;   // finger length into the box — taller so the catch reaches
 
 usbW = 14; usbZ = 2; usbH = 12;
 
@@ -55,10 +56,21 @@ module clips(cx, cy, bL, seatZ) {
   backZ = seatZ + boardT;
   for (s = [-1, 1]) {
     xo = cx + s*(bL/2 + clipGap);                  // finger inner face
+    // finger post — taller so the catch reaches over a seated board
     translate([s > 0 ? xo : xo - clipT, cy - clipW/2, seatZ])
-      cube([clipT, clipW, boardT + 2]);
-    translate([s > 0 ? xo - clipNub : xo, cy - clipW/2, backZ])
-      cube([clipNub, clipW, nubH]);
+      cube([clipT, clipW, fingerH]);
+    // wedge nub: flat underside at backZ retains the board; sloped top is a
+    // lead-in ramp so the board cams the finger outward as you press it in
+    if (s > 0)
+      hull() {
+        translate([xo - clipNub, cy - clipW/2, backZ])       cube([clipNub, clipW, 0.01]);
+        translate([xo - 0.01,    cy - clipW/2, backZ + nubH]) cube([0.01,   clipW, 0.01]);
+      }
+    else
+      hull() {
+        translate([xo,        cy - clipW/2, backZ])       cube([clipNub, clipW, 0.01]);
+        translate([xo,        cy - clipW/2, backZ + nubH]) cube([0.01,   clipW, 0.01]);
+      }
   }
 }
 
