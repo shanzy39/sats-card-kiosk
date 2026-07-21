@@ -14,7 +14,7 @@ $fn      = 48;
 // internal cavity (roomy — holds ESP32 + the jumper-wire nest)
 inL = 92;
 inW = 52;
-inH = 34;         // internal depth of the base
+inH = 50;         // internal depth of the base (deeper for the wire nest)
 
 // board pockets (with clearance)
 pnL = 44;  pnW = 42;         // PN532
